@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Habit Tracker',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 234, 13, 13)),
       ),
       home: const MainView(),
     );
