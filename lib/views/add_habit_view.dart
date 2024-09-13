@@ -8,23 +8,49 @@ class AddHabitView extends StatefulWidget{
 }
 
 class _AddHabitViewState extends State<AddHabitView> {
+  final _formKey = GlobalKey<FormState>();
   String name = '';
   String assignedIcon = 'check';
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ElevatedButton(
-                child: const Text('Add Habit'),
+      appBar: AppBar(
+        title: Text('Add New Habit'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Habit Name
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Habit Name'),
+                validator: (value) => value!.isEmpty ? 'Enter a habit name' : null,
+                onSaved: (value) => name = value!,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                child: Text('Add Habit'),
                 onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
                     Navigator.pop(
                       context,
-                      null
+                      Habit(
+                        id: Uuid().v4(),
+                        name: name,
+                        assignedIcon: assignedIcon,
+                      ),
                     );
+                  }
                 },
               ),
+            ],
+          ),
+        ),
+      ),
     );
   }
-
-
 }
