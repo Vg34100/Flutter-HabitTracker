@@ -19,8 +19,11 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _habitController.habits.isNotEmpty
-          ? HabitCard(
+      body: FutureBuilder(
+        future: _habitController.loadHabits(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return HabitCard(
               habit: _habitController.habits[0],
               isDone: false,
               onDone: () {
@@ -29,8 +32,12 @@ class _MainViewState extends State<MainView> {
                   // Update the state if needed
                 });
               },
-            )
-          : Center(child: Text('No habits available')),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
