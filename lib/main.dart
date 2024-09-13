@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'views/main_view.dart';
 
 void main() {
   runApp(const MainApp());
@@ -14,11 +15,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      home: const MainView(),
     );
   }
 }
