@@ -15,6 +15,7 @@ class HabitCard extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
+    String recurrenceText = '${habit.recurrence.amount} ${habit.recurrence.unit} ${habit.recurrence.period}';
 
     return Opacity(
       opacity: isDone ? 0.5 : 1.0,
@@ -22,6 +23,7 @@ class HabitCard extends StatelessWidget{
         child: ListTile(
           leading: Icon(_getIconData(habit.assignedIcon)),
           title: Text(habit.name),
+          subtitle: Text(recurrenceText),
           trailing: ElevatedButton(
             onPressed: isDone ? null : onDone,
             child: const Text('Done'),
