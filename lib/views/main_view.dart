@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/controllers/habit_controller.dart';
+import 'package:habit_tracker/views/add_habit_view.dart';
 import 'package:habit_tracker/widgets/habit_card.dart';
 import 'package:intl/intl.dart';
 
@@ -47,9 +48,28 @@ class _MainViewState extends State<MainView> {
               },
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         },
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () async {
+                var newHabit = await Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => AddHabitView()),
+                );
+                if (newHabit != null) {
+                  setState(() {
+                    _habitController.addHabit(newHabit);
+                  });
+                }
+              }, 
+              icon: const Icon(Icons.add))
+          ],
+        ),
       ),
     );
   }
