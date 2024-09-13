@@ -47,5 +47,41 @@ class HabitController {
 		await saveHabits();
 	}
 
+	Future<void> markHabitDone(Habit habit, DateTime date) async {
+		// For weekly/monthly habits, mark all days in the period as complete
+		List<String> datesToMark = _getDatesForPeriod(habit, date);
+		for (var dateStr in datesToMark) {
+			habit.completion[dateStr] = true;
+		}
 
+		await saveHabits();
+	}
+
+	List<String> _getDatesForPeriod(Habit habit, DateTime date) {
+		List<String> dates = [];
+		if (habit.recurrence.period == 'per day') {
+			dates.add(_formatDate(date));
+		} else if (habit.recurrence.period == 'per week') {
+			DateTime startOfWeek = date.subtract(Duration(days: date.weekday - 1));
+			for (int i = 0; i < 7; i++) {
+				dates.add(_formatDate(startOfWeek.add(Duration(days: i))));
+			}
+		} else if (habit.recurrence.period == 'per month') {
+			DateTime startOfMonth = DateTime(date.year, date.month, 1);
+			int daysInMonth = DateTime(date.year, date.month + 1, 0).day;
+			for (int i = 0; i < daysInMonth; i++) {
+				dates.add(_formatDate(startOfMonth.add(Duration(days: i))));
+			}
+		}
+		return dates;
+	}
+
+	String _formatDate(DateTime date) {
+		return '${date.year}-${date.month}-${date.day}';
+	}
+
+	bool isHabitDone(Habit habit, DateTime date) {
+		String dateKey = _formatDate(date);
+		return habit.completion[dateKey] ?? false;
+	}
 }

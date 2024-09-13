@@ -69,16 +69,26 @@ class _MainViewState extends State<MainView> {
   Widget _buildHabitList() {
     // Separate habits into active and completed
     List<Habit> activeHabits = [];
+    List<Habit> completedHabits = [];
+
+    for (var habit in _habitController.habits) {
+      bool isDone = _habitController.isHabitDone(habit, selectedDate);
+      if (isDone) {
+        completedHabits.add(habit);
+      } else {
+        activeHabits.add(habit);
+      }
+    }
 
     List<Widget> habitListWidgets = [];
 
       habitListWidgets.addAll(
-        _habitController.habits.map((habit) => HabitCard(
+        activeHabits.map((habit) => HabitCard(
               habit: habit,
               isDone: false,
               onDone: () {
                 setState(() {
-                   // Mark as done
+                    _habitController.markHabitDone(habit, selectedDate);
                 });
               },
             )),
