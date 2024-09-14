@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
 class Recurrence {
 	int amount;          // e.g., 15
 	String unit;         // 'times' or 'minutes'

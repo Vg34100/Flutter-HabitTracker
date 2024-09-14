@@ -34,8 +34,7 @@ class DateSliderState extends State<DateSlider> {
 				itemBuilder: (context, index) {
 					DateTime date = currentDate.add(Duration(days: index - 3));
 					bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
-							DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-
+                        DateFormat('yyyy-MM-dd').format(widget.selectedDate);
 					return GestureDetector(
 						onTap: () {
 							widget.onDateSelected(date);

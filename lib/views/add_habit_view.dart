@@ -20,7 +20,7 @@ class AddHabitViewState extends State<AddHabitView> {
 	String period = 'per day';
 	
 
-  IconData? selectedIcon;
+  IconData? selectedIcon = Icons.check_box;
 
 
 
