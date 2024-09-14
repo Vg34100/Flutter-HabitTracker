@@ -58,6 +58,12 @@ class HabitController extends ChangeNotifier {
     notifyListeners(); 
   }
 
+  Future<void> deleteHabit(Habit habit) async {
+    habits.removeWhere((h) => h.id == habit.id);
+    await saveHabits();
+    notifyListeners();
+  }
+
 	Future<void> markHabitDone(Habit habit, DateTime date) async {
 		// For weekly/monthly habits, mark all days in the period as complete
 		List<String> datesToMark = _getDatesForPeriod(habit, date);
@@ -156,6 +162,13 @@ class HabitController extends ChangeNotifier {
                   markHabitDone(habit, selectedDate);
                   notifyListeners();
                 },
+                onEdit: () {
+
+                },
+                onDelete: () {
+                  deleteHabit(habit);
+                },
+                
 							)),
 				);
 			}
@@ -177,6 +190,12 @@ class HabitController extends ChangeNotifier {
 							habit: habit,
 							isDone: true,
 							onDone: () {},
+              onEdit: () {
+
+                },
+                onDelete: () {
+                  deleteHabit(habit);
+                },
 						)),
 			);
 		}
