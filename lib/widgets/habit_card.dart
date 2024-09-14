@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/models/habit_model.dart';
 
-class HabitCard extends StatelessWidget{
-	final Habit habit;
-	final bool isDone;
-	final VoidCallback onDone;
-  final VoidCallback onEdit;    // New callback for edit
-  final VoidCallback onDelete;  // New callback for delete
+class HabitCard extends StatelessWidget {
+  final Habit habit;
+  final bool isDone;
+  final VoidCallback onDone;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
-	const HabitCard({
-		super.key,
-		required this.habit,
-		required this.isDone,
-		required this.onDone,
+  const HabitCard({
+    Key? key,
+    required this.habit,
+    required this.isDone,
+    required this.onDone,
     required this.onEdit,
     required this.onDelete,
-	});
-	
-	@override
-	Widget build(BuildContext context) {
-		String recurrenceText = '${habit.recurrence.amount} ${habit.recurrence.unit} ${habit.recurrence.period}';
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String recurrenceText = '${habit.recurrence.amount} ${habit.recurrence.unit} ${habit.recurrence.period}';
 
     Icon habitIcon = Icon(
       IconData(
@@ -29,31 +29,51 @@ class HabitCard extends StatelessWidget{
       ),
     );
 
-		return GestureDetector(
+    return Opacity(
+      opacity: isDone ? 0.5 : 1.0,
+      child: Card(
+        child: InkWell(
+          onTap: () {
+            // You can add a specific action for tap if needed
+          },
           onLongPress: () {
             _showOptionsDialog(context);
           },
-
-          child: Opacity(
-            opacity: isDone ? 0.5 : 1.0,
-            child: Card(
-              child: ListTile(
-                    leading: Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: habitIcon,
-                    ),
-                title: Text(habit.name),
-                subtitle: Text(recurrenceText),
-                trailing: ElevatedButton(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: habitIcon,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        habit.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        recurrenceText,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton(
                   onPressed: isDone ? null : onDone,
                   child: const Text('Done'),
                 ),
-              ),
+              ],
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
-  
+
   void _showOptionsDialog(BuildContext context) {
     showDialog(
       context: context,

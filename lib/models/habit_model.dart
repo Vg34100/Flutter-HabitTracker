@@ -1,75 +1,75 @@
 import 'dart:convert';
 
 class Recurrence {
-	int amount;          // e.g., 15
-	String unit;         // 'times' or 'minutes'
-	String period;       // 'per day', 'per week', 'per month'
+  int amount;          // e.g., 15
+  String unit;         // 'times' or 'minutes'
+  String period;       // 'per day', 'per week', 'per month'
 
-	Recurrence({
-	required this.amount,
-	required this.unit,
-	required this.period,
-	});
+  Recurrence({
+  required this.amount,
+  required this.unit,
+  required this.period,
+  });
 
-	Map<String, dynamic> toMap() {
-	return {
-		'amount': amount,
-		'unit': unit,
-		'period': period,
-	};
-	}
+  Map<String, dynamic> toMap() {
+  return {
+    'amount': amount,
+    'unit': unit,
+    'period': period,
+  };
+  }
 
-	factory Recurrence.fromMap(Map<String, dynamic> map) {
-	return Recurrence(
-		amount: map['amount'],
-		unit: map['unit'],
-		period: map['period'],
-	);
-	}
+  factory Recurrence.fromMap(Map<String, dynamic> map) {
+  return Recurrence(
+    amount: map['amount'],
+    unit: map['unit'],
+    period: map['period'],
+  );
+  }
 }
 
 class Habit {
-	String id; // Identifier
-	String name;
+  String id; // Identifier
+  String name;
   String assignedIconFamily;
   int assignedIconCodePoint;
 
-	Recurrence recurrence;        // Structured recurrence
-	Map<String, bool> completion; // Date strings mapped to completion status
+  Recurrence recurrence;        // Structured recurrence
+  Map<String, bool> completion; // Date strings mapped to completion status
 
-	Habit({
-		required this.id,
-		required this.name,
-		required this.recurrence,
+  Habit({
+    required this.id,
+    required this.name,
+    required this.recurrence,
     required this.assignedIconFamily,
     required this.assignedIconCodePoint,		
     Map<String, bool>? completion,
-	}) : completion = completion ?? {};
+  }) : completion = completion ?? {};
 
-	Map<String, dynamic> toMap() {
-	return {
-		'id': id,
-		'name': name,
-		'recurrence': recurrence.toMap(),
+  Map<String, dynamic> toMap() {
+  return {
+    'id': id,
+    'name': name,
+    'recurrence': recurrence.toMap(),
       'assignedIconFamily': assignedIconFamily,
       'assignedIconCodePoint': assignedIconCodePoint,		
       'completion': completion,
-	};
-	}
+  };
+  }
 
-	factory Habit.fromMap(Map<String, dynamic> map) {
-	return Habit(
-		id: map['id'],
-		name: map['name'],
-		recurrence: Recurrence.fromMap(Map<String, dynamic>.from(map['recurrence'])),
+  factory Habit.fromMap(Map<String, dynamic> map) {
+  return Habit(
+    id: map['id'],
+    name: map['name'],
+    recurrence: Recurrence.fromMap(Map<String, dynamic>.from(map['recurrence'])),
     assignedIconFamily: map['assignedIconFamily'],
     assignedIconCodePoint: map['assignedIconCodePoint'],		
     completion: Map<String, bool>.from(map['completion']),
-	);
-	}
+  );
+  }
 
-	String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap());
 
-	factory Habit.fromJson(String source) => Habit.fromMap(json.decode(source));
+  factory Habit.fromJson(String source) => Habit.fromMap(json.decode(source));
 }
 
