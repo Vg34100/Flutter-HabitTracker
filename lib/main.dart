@@ -1,8 +1,10 @@
-import 'dart:ui';
+import 'package:habit_tracker/controllers/theme_controller.dart';
+import 'package:habit_tracker/themes/app_themes.dart';
+import 'package:habit_tracker/views/main_view.dart';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'views/main_view.dart';
+import 'package:provider/provider.dart';
+import 'dart:ui';
 
 void main() {
 	runApp(const MainApp());
@@ -13,13 +15,19 @@ class MainApp extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-		return MaterialApp(
-			title: 'Habit Tracker',
-			theme: ThemeData(
-				colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 234, 13, 13)),
-			),
-			home: const MainView(),
-      scrollBehavior: const MaterialScrollBehavior().copyWith( dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},),
+		return ChangeNotifierProvider(
+			create: (_) => ThemeController(),
+			builder: (context, _) {
+				final themeController = Provider.of<ThemeController>(context);
+				return MaterialApp(
+					title: 'Habit Tracker',
+					theme: MyAppThemes.lightTheme,
+					darkTheme: MyAppThemes.darkTheme,
+					themeMode: themeController.themeMode,
+					home: const MainView(),
+					scrollBehavior: const MaterialScrollBehavior().copyWith( dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},),
+				);
+			},
 		);
 	}
 }
