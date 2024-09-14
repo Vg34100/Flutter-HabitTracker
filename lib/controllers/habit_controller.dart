@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:habit_tracker/models/habit_model.dart';
+
+import 'package:habit_tracker/widgets/habit_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-class HabitController {
+class HabitController extends ChangeNotifier {
 	List<Habit> habits = [];
 	static const String habitsKey = 'habits_key';
 
@@ -42,10 +45,11 @@ class HabitController {
 		await prefs.setStringList(habitsKey, habitsJson);
 	}
 
-	Future<void> addHabit(Habit habit) async {
-		habits.add(habit);
-		await saveHabits();
-	}
+  Future<void> addHabit(Habit habit) async {
+    habits.add(habit);
+    await saveHabits();
+    notifyListeners(); 
+  }
 
 	Future<void> markHabitDone(Habit habit, DateTime date) async {
 		// For weekly/monthly habits, mark all days in the period as complete
@@ -55,6 +59,7 @@ class HabitController {
 		}
 
 		await saveHabits();
+    notifyListeners(); 
 	}
 
 	List<String> _getDatesForPeriod(Habit habit, DateTime date) {
@@ -84,4 +89,93 @@ class HabitController {
 		String dateKey = _formatDate(date);
 		return habit.completion[dateKey] ?? false;
 	}
+
+  Widget buildHabitList(DateTime selectedDate) {
+		// Separate habits into active and completed
+		List<Habit> activeHabits = [];
+		List<Habit> completedHabits = [];
+
+		for (var habit in habits) {
+			bool isDone = isHabitDone(habit, selectedDate);
+			if (isDone) {
+				completedHabits.add(habit);
+			} else {
+				activeHabits.add(habit);
+			}
+		}
+
+		// Group active habits by recurrence period
+		Map<String, List<Habit>> habitsByPeriod = {
+			'per day': [],
+			'per week': [],
+			'per month': [],
+		};
+
+	 for (var habit in activeHabits) {
+			habitsByPeriod[habit.recurrence.period]?.add(habit);
+		}
+
+		List<Widget> habitListWidgets = [];
+
+	 // Build widgets for active habits grouped by period
+		habitsByPeriod.forEach((period, habits) {
+			if (habits.isNotEmpty) {
+				String title = '';
+				switch (period) {
+					case 'per day':
+						title = 'Daily Habits';
+						break;
+					case 'per week':
+						title = 'Weekly Habits';
+						break;
+					case 'per month':
+						title = 'Monthly Habits';
+						break;
+				}
+
+				habitListWidgets.add(
+					Padding(
+						padding: const EdgeInsets.all(8.0),
+						child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+					),
+				);
+
+				habitListWidgets.addAll(
+					habits.map((habit) => HabitCard(
+								habit: habit,
+								isDone: false,
+                onDone: () {
+                  markHabitDone(habit, selectedDate);
+                  notifyListeners();
+                },
+							)),
+				);
+			}
+		});
+
+		// Add a divider before the completed habits
+		if (completedHabits.isNotEmpty) {
+			habitListWidgets.add(const Divider());
+			habitListWidgets.add(
+				const Padding(
+					padding: EdgeInsets.all(8.0),
+					child: Text('Completed Habits', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+				),
+			);
+
+			habitListWidgets.addAll(
+				completedHabits.map((habit) => HabitCard(
+							habit: habit,
+							isDone: true,
+							onDone: () {},
+						)),
+			);
+		}
+
+
+		return ListView(
+			children: habitListWidgets,
+		);
+	}
+
 }

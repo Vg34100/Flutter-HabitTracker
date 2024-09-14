@@ -20,6 +20,23 @@ class _MainViewState extends State<MainView> {
 	DateTime selectedDate = DateTime.now();
 
 	@override
+	void initState() {
+		super.initState();
+		_habitController.addListener(_onControllerUpdate);
+	}
+
+	@override
+	void dispose() {
+		_habitController.removeListener(_onControllerUpdate);
+		super.dispose();
+	}
+
+	void _onControllerUpdate() {
+		setState(() {}); // Update the UI when the controller notifies changes
+	}
+
+
+	@override
 	Widget build(BuildContext context) {
 			String formattedDate = DateFormat('EEEE, MMM d').format(selectedDate);
 
@@ -41,7 +58,7 @@ class _MainViewState extends State<MainView> {
 					future: _habitController.loadHabits(),
 					builder: (context, snapshot) {
 						if (snapshot.connectionState == ConnectionState.done) {
-							return _buildHabitList();
+							return _habitController.buildHabitList(selectedDate);
 						} else {
 							return const Center(child: CircularProgressIndicator());
 						}
@@ -80,92 +97,4 @@ class _MainViewState extends State<MainView> {
 		);
 	}
 
-	Widget _buildHabitList() {
-		// Separate habits into active and completed
-		List<Habit> activeHabits = [];
-		List<Habit> completedHabits = [];
-
-		for (var habit in _habitController.habits) {
-			bool isDone = _habitController.isHabitDone(habit, selectedDate);
-			if (isDone) {
-				completedHabits.add(habit);
-			} else {
-				activeHabits.add(habit);
-			}
-		}
-
-		// Group active habits by recurrence period
-		Map<String, List<Habit>> habitsByPeriod = {
-			'per day': [],
-			'per week': [],
-			'per month': [],
-		};
-
-	 for (var habit in activeHabits) {
-			habitsByPeriod[habit.recurrence.period]?.add(habit);
-		}
-
-		List<Widget> habitListWidgets = [];
-
-	 // Build widgets for active habits grouped by period
-		habitsByPeriod.forEach((period, habits) {
-			if (habits.isNotEmpty) {
-				String title = '';
-				switch (period) {
-					case 'per day':
-						title = 'Daily Habits';
-						break;
-					case 'per week':
-						title = 'Weekly Habits';
-						break;
-					case 'per month':
-						title = 'Monthly Habits';
-						break;
-				}
-
-				habitListWidgets.add(
-					Padding(
-						padding: const EdgeInsets.all(8.0),
-						child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-					),
-				);
-
-				habitListWidgets.addAll(
-					habits.map((habit) => HabitCard(
-								habit: habit,
-								isDone: false,
-								onDone: () {
-									setState(() {
-										_habitController.markHabitDone(habit, selectedDate);
-									});
-								},
-							)),
-				);
-			}
-		});
-
-    // Add a divider before the completed habits
-    if (completedHabits.isNotEmpty) {
-      habitListWidgets.add(const Divider());
-      habitListWidgets.add(
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Completed Habits', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ),
-      );
-
-      habitListWidgets.addAll(
-        completedHabits.map((habit) => HabitCard(
-              habit: habit,
-              isDone: true,
-              onDone: () {},
-            )),
-      );
-    }
-
-
-		return ListView(
-			children: habitListWidgets,
-		);
-	}
 }
