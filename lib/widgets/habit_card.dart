@@ -17,11 +17,19 @@ class HabitCard extends StatelessWidget{
 	Widget build(BuildContext context) {
 		String recurrenceText = '${habit.recurrence.amount} ${habit.recurrence.unit} ${habit.recurrence.period}';
 
+    Icon habitIcon = Icon(
+      IconData(
+        habit.assignedIconCodePoint,
+        fontFamily: habit.assignedIconFamily,
+        fontPackage: null, // Add if necessary
+      ),
+    );
+
 		return Opacity(
 			opacity: isDone ? 0.5 : 1.0,
 			child: Card(
 				child: ListTile(
-					leading: Icon(_getIconData(habit.assignedIcon)),
+          leading: habitIcon,
 					title: Text(habit.name),
 					subtitle: Text(recurrenceText),
 					trailing: ElevatedButton(

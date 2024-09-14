@@ -27,17 +27,19 @@ class HabitController extends ChangeNotifier {
 			// Initialize with default habits if no data is found
 			habits = [
 				Habit(
-				id: const Uuid().v4(),
-				name: 'Read Book',
-				recurrence: Recurrence(amount: 15, unit: 'minutes', period: 'per day'),
-				assignedIcon: 'book',
-				),
+          id: const Uuid().v4(),
+          name: 'Read Book',
+          recurrence: Recurrence(amount: 15, unit: 'minutes', period: 'per day'),
+          assignedIconFamily: Icons.book.fontFamily ?? '',
+          assignedIconCodePoint: Icons.book.codePoint,				
+        ),
 				Habit(
-				id: const Uuid().v4(),
-				name: 'Write in Journal',
-				recurrence: Recurrence(amount: 1, unit: 'times', period: 'per week'),
-				assignedIcon: 'edit',
-				),
+          id: const Uuid().v4(),
+          name: 'Write in Journal',
+          recurrence: Recurrence(amount: 1, unit: 'times', period: 'per week'),
+          assignedIconFamily: Icons.edit.fontFamily ?? '',
+          assignedIconCodePoint: Icons.edit.codePoint,				
+        ),
 			];
 			await saveHabits();
 		}

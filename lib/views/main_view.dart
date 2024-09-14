@@ -74,13 +74,16 @@ class _MainViewState extends State<MainView> {
 				backgroundColor: Theme.of(context).colorScheme.primaryContainer,
 				// Add the toggle button to the AppBar actions
 				actions: [
-					IconButton(
+					Padding(
+						padding: const EdgeInsets.all(12.0),
+						child: IconButton(
 						icon: Icon(themeController.themeMode == ThemeMode.dark
 								? Icons.light_mode
 								: Icons.dark_mode),
 						onPressed: () {
 							themeController.toggleTheme();
 						},
+						),
 					),
 				],
 			),

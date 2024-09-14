@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:habit_tracker/models/habit_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,6 +19,11 @@ class AddHabitViewState extends State<AddHabitView> {
 	String unit = 'times';
 	String period = 'per day';
 	
+
+  IconData? selectedIcon;
+
+
+
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
@@ -76,6 +82,23 @@ class AddHabitViewState extends State<AddHabitView> {
 								decoration: const InputDecoration(labelText: 'Period'),
 							),
 							const SizedBox(height: 20),
+                // Icon Picker
+                Row(
+                  children: [
+                    selectedIcon != null
+                        ? Icon(selectedIcon)
+                        : const Text('No icon selected'),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: _pickIcon,
+                      child: const Text('Select Icon'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+
+
 							ElevatedButton(
 								child: const Text('Add Habit'),
 								onPressed: () {
@@ -87,7 +110,8 @@ class AddHabitViewState extends State<AddHabitView> {
 												id: const Uuid().v4(),
 												name: name,
 												recurrence: Recurrence(amount: amount, unit: unit, period: period),
-												assignedIcon: assignedIcon,
+                        assignedIconFamily: selectedIcon!.fontFamily ?? '',
+                        assignedIconCodePoint: selectedIcon!.codePoint,
 											),
 										);
 									}
@@ -99,4 +123,15 @@ class AddHabitViewState extends State<AddHabitView> {
 			),
 		);
 	}
+
+  Future<void> _pickIcon() async {
+    IconData? icon = await showIconPicker(context,
+        iconPackModes: [IconPack.material]);
+
+    if (icon != null) {
+      setState(() {
+        selectedIcon = icon;
+      });
+    }
+  }
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 class Recurrence {
 	int amount;          // e.g., 15
 	String unit;         // 'times' or 'minutes'
@@ -31,7 +33,8 @@ class Recurrence {
 class Habit {
 	String id; // Identifier
 	String name;
-	String assignedIcon;
+  String assignedIconFamily;
+  int assignedIconCodePoint;
 
 	Recurrence recurrence;        // Structured recurrence
 	Map<String, bool> completion; // Date strings mapped to completion status
@@ -40,8 +43,9 @@ class Habit {
 		required this.id,
 		required this.name,
 		required this.recurrence,
-		required this.assignedIcon,
-		Map<String, bool>? completion,
+    required this.assignedIconFamily,
+    required this.assignedIconCodePoint,		
+    Map<String, bool>? completion,
 	}) : completion = completion ?? {};
 
 	Map<String, dynamic> toMap() {
@@ -49,8 +53,9 @@ class Habit {
 		'id': id,
 		'name': name,
 		'recurrence': recurrence.toMap(),
-		'assignedIcon': assignedIcon,
-		'completion': completion,
+      'assignedIconFamily': assignedIconFamily,
+      'assignedIconCodePoint': assignedIconCodePoint,		
+      'completion': completion,
 	};
 	}
 
@@ -59,8 +64,9 @@ class Habit {
 		id: map['id'],
 		name: map['name'],
 		recurrence: Recurrence.fromMap(Map<String, dynamic>.from(map['recurrence'])),
-		assignedIcon: map['assignedIcon'],
-		completion: Map<String, bool>.from(map['completion']),
+    assignedIconFamily: map['assignedIconFamily'],
+    assignedIconCodePoint: map['assignedIconCodePoint'],		
+    completion: Map<String, bool>.from(map['completion']),
 	);
 	}
 
