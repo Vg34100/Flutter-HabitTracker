@@ -34,16 +34,19 @@ class _MainViewState extends State<MainView> {
 				),
 					backgroundColor: Theme.of(context).colorScheme.primaryContainer,
 			),
-			body: FutureBuilder(
-				future: _habitController.loadHabits(),
-				builder: (context, snapshot) {
-					if (snapshot.connectionState == ConnectionState.done) {
-						return _buildHabitList();
-					} else {
-						return const Center(child: CircularProgressIndicator());
-					}
-				},
-			),
+			body: Padding(
+							padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0),
+							child: FutureBuilder(
+								future: _habitController.loadHabits(),
+								builder: (context, snapshot) {
+									if (snapshot.connectionState == ConnectionState.done) {
+										return _buildHabitList();
+									} else {
+										return const Center(child: CircularProgressIndicator());
+									}
+								},
+							),
+						),
 			bottomNavigationBar: BottomAppBar(
 				child: Row(
 					children: [
@@ -130,6 +133,24 @@ class _MainViewState extends State<MainView> {
 			}
 		});
 
+    // Add a divider before the completed habits
+    if (completedHabits.isNotEmpty) {
+      habitListWidgets.add(const Divider());
+      habitListWidgets.add(
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('Completed Habits', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ),
+      );
+
+      habitListWidgets.addAll(
+        completedHabits.map((habit) => HabitCard(
+              habit: habit,
+              isDone: true,
+              onDone: () {},
+            )),
+      );
+    }
 
 
 		return ListView(
