@@ -5,11 +5,11 @@ import 'package:uuid/uuid.dart';
 class AddHabitView extends StatefulWidget{
 	const AddHabitView({super.key});
 
-		@override
-	_AddHabitViewState createState() => _AddHabitViewState();
+	@override
+	AddHabitViewState createState() => AddHabitViewState();
 }
 
-class _AddHabitViewState extends State<AddHabitView> {
+class AddHabitViewState extends State<AddHabitView> {
 	final _formKey = GlobalKey<FormState>();
 	String name = '';
 	String assignedIcon = 'check';
