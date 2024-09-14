@@ -21,7 +21,7 @@ class HabitCard extends StatelessWidget{
       IconData(
         habit.assignedIconCodePoint,
         fontFamily: habit.assignedIconFamily,
-        fontPackage: null, // Add if necessary
+        fontPackage: null,
       ),
     );
 
@@ -29,7 +29,10 @@ class HabitCard extends StatelessWidget{
 			opacity: isDone ? 0.5 : 1.0,
 			child: Card(
 				child: ListTile(
-          leading: habitIcon,
+          leading: Padding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            child: habitIcon,
+          ),
 					title: Text(habit.name),
 					subtitle: Text(recurrenceText),
 					trailing: ElevatedButton(
@@ -39,16 +42,5 @@ class HabitCard extends StatelessWidget{
 				),
 			),
 		);
-	}
-
-	IconData _getIconData(String iconName) {
-		switch (iconName) {
-			case 'book':
-				return Icons.book;
-			case 'edit':
-				return Icons.edit;
-			default:
-				return Icons.check_circle;
-		}
 	}
 }

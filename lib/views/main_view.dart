@@ -1,6 +1,7 @@
 
 import 'package:habit_tracker/controllers/habit_controller.dart';
 import 'package:habit_tracker/controllers/theme_controller.dart';
+import 'package:habit_tracker/models/habit_model.dart';
 
 import 'package:habit_tracker/views/add_habit_view.dart';
 import 'package:habit_tracker/widgets/date_slider.dart';
@@ -107,17 +108,30 @@ class _MainViewState extends State<MainView> {
 							),
 						),
 						IconButton(
-							onPressed: () async {
-								var newHabit = await Navigator.push(
-									context,
-									MaterialPageRoute(builder: (context) => const AddHabitView()),
-								);
-								if (newHabit != null) {
-									await _habitController.addHabit(newHabit);
-								}
-							},
-							icon: const Icon(Icons.add),
-						)
+						onPressed: () async {
+							var newHabit = await showDialog<Habit>(
+							context: context,
+							builder: (context) => Dialog(
+								shape: RoundedRectangleBorder(
+								borderRadius: BorderRadius.circular(16.0),
+								),
+								child: ConstrainedBox(
+								constraints: BoxConstraints(
+									maxWidth: 400, // To not extend the modal across the whole width
+									minWidth: 300,
+									maxHeight: MediaQuery.of(context).size.height * 0.8,
+								),
+								child: AddHabitView(),
+								),
+							),
+							);
+
+							if (newHabit != null) {
+							await _habitController.addHabit(newHabit);
+							}
+						},
+						icon: const Icon(Icons.add),
+						),
 
 					],
 				),

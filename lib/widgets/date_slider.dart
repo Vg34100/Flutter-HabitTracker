@@ -30,7 +30,7 @@ class DateSliderState extends State<DateSlider> {
 			height: 60,
 			child: ListView.builder(
 				scrollDirection: Axis.horizontal,
-				itemCount: 31, // Show a week of dates
+				itemCount: 31, // Show a month of dates
 				itemBuilder: (context, index) {
 					DateTime date = currentDate.add(Duration(days: index - 3));
 					bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
