@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'views/main_view.dart';
 
@@ -16,6 +19,7 @@ class MainApp extends StatelessWidget {
 				colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 234, 13, 13)),
 			),
 			home: const MainView(),
+      scrollBehavior: const MaterialScrollBehavior().copyWith( dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},),
 		);
 	}
 }
