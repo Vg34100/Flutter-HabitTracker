@@ -9,11 +9,15 @@ class HabitController extends ChangeNotifier {
 	List<Habit> habits = [];
 	static const String habitsKey = 'habits_key';
 
-	HabitController() {
-		loadHabits();
-	}
+	// HabitController() {
+	// 	loadHabits();
+	// }
 
 	Future<void> loadHabits() async {
+    if (habits.isNotEmpty) {
+    // Habits are already loaded
+      return;
+    }
 		SharedPreferences prefs = await SharedPreferences.getInstance();
 		List<String>? habitsJson = prefs.getStringList(habitsKey);
 
@@ -35,8 +39,9 @@ class HabitController extends ChangeNotifier {
 				assignedIcon: 'edit',
 				),
 			];
-			saveHabits();
+			await saveHabits();
 		}
+    notifyListeners();
 	}
 
 	Future<void> saveHabits() async {
@@ -142,6 +147,7 @@ class HabitController extends ChangeNotifier {
 
 				habitListWidgets.addAll(
 					habits.map((habit) => HabitCard(
+                key: ValueKey(habit.id),
 								habit: habit,
 								isDone: false,
                 onDone: () {
@@ -165,6 +171,7 @@ class HabitController extends ChangeNotifier {
 
 			habitListWidgets.addAll(
 				completedHabits.map((habit) => HabitCard(
+              key: ValueKey(habit.id),
 							habit: habit,
 							isDone: true,
 							onDone: () {},
@@ -173,9 +180,13 @@ class HabitController extends ChangeNotifier {
 		}
 
 
-		return ListView(
-			children: habitListWidgets,
-		);
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      child: ListView(
+        key: ValueKey<String>('habitList_${selectedDate.toString()}'),
+        children: habitListWidgets,
+      ),
+    );
 	}
 
 }

@@ -1,10 +1,10 @@
 
-import 'package:flutter/material.dart';
 import 'package:habit_tracker/controllers/habit_controller.dart';
-import 'package:habit_tracker/models/habit_model.dart';
+
 import 'package:habit_tracker/views/add_habit_view.dart';
 import 'package:habit_tracker/widgets/date_slider.dart';
-import 'package:habit_tracker/widgets/habit_card.dart';
+
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MainView extends StatefulWidget{
@@ -12,17 +12,18 @@ class MainView extends StatefulWidget{
 
 	@override
 	State<MainView> createState() => _MainViewState();
-	
 }
 
 class _MainViewState extends State<MainView> {
 	final HabitController _habitController = HabitController();
 	DateTime selectedDate = DateTime.now();
+  bool isLoading = true;
 
 	@override
 	void initState() {
 		super.initState();
 		_habitController.addListener(_onControllerUpdate);
+    _loadHabits();
 	}
 
 	@override
@@ -35,10 +36,16 @@ class _MainViewState extends State<MainView> {
 		setState(() {}); // Update the UI when the controller notifies changes
 	}
 
+  Future<void> _loadHabits() async {
+    await _habitController.loadHabits();
+    setState(() {
+      isLoading = false; // Update loading state
+    });
+  }
 
 	@override
 	Widget build(BuildContext context) {
-			String formattedDate = DateFormat('EEEE, MMM d').format(selectedDate);
+		String formattedDate = DateFormat('EEEE, MMM d').format(selectedDate);
 
 
 		return Scaffold(
@@ -52,19 +59,12 @@ class _MainViewState extends State<MainView> {
 				),
 					backgroundColor: Theme.of(context).colorScheme.primaryContainer,
 			),
-			body: Padding(
-				padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0),
-				child: FutureBuilder(
-					future: _habitController.loadHabits(),
-					builder: (context, snapshot) {
-						if (snapshot.connectionState == ConnectionState.done) {
-							return _habitController.buildHabitList(selectedDate);
-						} else {
-							return const Center(child: CircularProgressIndicator());
-						}
-					},
-				),
-			),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _habitController.buildHabitList(selectedDate),
+      ),
 			bottomNavigationBar: BottomAppBar(
 				child: Row(
 					children: [
@@ -78,19 +78,19 @@ class _MainViewState extends State<MainView> {
 								},
 							),
 						),
-						IconButton(
-							onPressed: () async {
-								var newHabit = await Navigator.push(
-									context, 
-									MaterialPageRoute(builder: (context) => const AddHabitView()),
-								);
-								if (newHabit != null) {
-									setState(() {
-										_habitController.addHabit(newHabit);
-									});
-								}
-							}, 
-							icon: const Icon(Icons.add))
+            IconButton(
+              onPressed: () async {
+                var newHabit = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddHabitView()),
+                );
+                if (newHabit != null) {
+                  await _habitController.addHabit(newHabit);
+                }
+              },
+              icon: const Icon(Icons.add),
+            )
+
 					],
 				),
 			),
