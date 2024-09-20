@@ -34,7 +34,6 @@ class HabitCard extends StatelessWidget {
       child: Card(
         child: InkWell(
           onTap: () {
-            // You can add a specific action for tap if needed
           },
           onLongPress: () {
             _showOptionsDialog(context);
