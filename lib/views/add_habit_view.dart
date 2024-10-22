@@ -1,5 +1,3 @@
-// lib/views/add_habit_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import '../models/habit_model.dart';

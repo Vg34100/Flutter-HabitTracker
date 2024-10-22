@@ -51,9 +51,9 @@ class Habit {
     'id': id,
     'name': name,
     'recurrence': recurrence.toMap(),
-      'assignedIconFamily': assignedIconFamily,
-      'assignedIconCodePoint': assignedIconCodePoint,		
-      'completion': completion,
+    'assignedIconFamily': assignedIconFamily,
+    'assignedIconCodePoint': assignedIconCodePoint,		
+    'completion': completion,
   };
   }
 
